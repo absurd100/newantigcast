@@ -1,12 +1,10 @@
-import asyncio
 from pyrogram.enums import ChatMemberStatus
 from config import config_db, DEFAULT_LOCAL_EXPIRY, app, delete_queue
+import asyncio
 
 async def get_config(chat_id):
     cfg = await config_db.find_one({"chat_id": chat_id})
-    if not cfg:
-        return {"local": True, "global": True, "expiry": DEFAULT_LOCAL_EXPIRY, "bio_check": False}
-    return cfg
+    return cfg or {"local": True, "global": True, "expiry": DEFAULT_LOCAL_EXPIRY, "bio_check": False}
 
 async def update_config(chat_id, key, value):
     await config_db.update_one({"chat_id": chat_id}, {"$set": {key: value}}, upsert=True)
